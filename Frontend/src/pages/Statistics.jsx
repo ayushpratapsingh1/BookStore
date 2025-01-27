@@ -102,21 +102,36 @@ const Statistics = () => {
     };
   };
 
-  const generateMonthlyData = () => ({
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [
-      {
-        label: 'Downloads',
-        data: [65, 59, 80, 81, 56, 55],
-        backgroundColor: '#FF9F1C',
-      },
-      {
-        label: 'Uploads',
-        data: [28, 48, 40, 19, 86, 27],
-        backgroundColor: '#FFBF69',
-      },
-    ],
-  });
+  const generateMonthlyData = () => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    
+    // Get last 6 months
+    const lastSixMonths = months
+      .slice(currentMonth - 5, currentMonth + 1)
+      .map((month, index) => ({
+        month,
+        uploads: stats.monthlyActivity?.uploads?.[currentMonth - 5 + index] || 0,
+        approvals: stats.monthlyActivity?.approvals?.[currentMonth - 5 + index] || 0
+      }));
+
+    return {
+      labels: lastSixMonths.map(m => m.month),
+      datasets: [
+        {
+          label: 'Uploads',
+          data: lastSixMonths.map(m => m.uploads),
+          backgroundColor: '#FF9F1C',
+        },
+        {
+          label: 'Approvals',
+          data: lastSixMonths.map(m => m.approvals),
+          backgroundColor: '#4CAF50',
+        }
+      ]
+    };
+  };
 
   if (loading) {
     return (
@@ -168,26 +183,52 @@ const Statistics = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-xl shadow-lg">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg overflow-x-auto">
           <h3 className="text-xl font-bold mb-4">Books by Genre</h3>
-          <div className="h-[300px] flex items-center justify-center">
+          <div className="min-h-[300px] w-full flex items-center justify-center">
             <Doughnut 
               data={generateChartData(stats.booksByGenre)} 
-              options={chartOptions}
+              options={{
+                ...chartOptions,
+                maintainAspectRatio: false,
+                responsive: true
+              }}
             />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-lg">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg overflow-x-auto">
           <h3 className="text-xl font-bold mb-4">Monthly Activity</h3>
-          <div className="h-[300px]">
+          <div className="min-h-[300px] w-full">
             <Bar 
               data={generateMonthlyData()} 
               options={{
                 ...chartOptions,
+                maintainAspectRatio: false,
+                responsive: true,
                 scales: {
                   y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    grid: {
+                      color: 'rgba(0,0,0,0.1)'
+                    },
+                    ticks: {
+                      stepSize: 1
+                    }
+                  },
+                  x: {
+                    grid: {
+                      display: false
+                    }
+                  }
+                },
+                plugins: {
+                  legend: {
+                    position: 'top',
+                  },
+                  tooltip: {
+                    mode: 'index',
+                    intersect: false,
                   }
                 }
               }} 

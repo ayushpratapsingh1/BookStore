@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Menu, X } from 'lucide-react';
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
   return (
     <header className="w-full top-0 z-50 blur-header bg-gradient-to-r from-[#FF9F1C] to-[#FFBF69]">
-      <nav className="container mx-auto px-8 py-4">
+      <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link 
             to="/" 
@@ -21,7 +23,16 @@ const Header = () => {
             </span>
           </Link>
           
-          <div className="flex items-center space-x-10">
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden p-2"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-10">
             {['Home', 'Upload', 'Statistics', 'Contact'].map((item) => (
               <Link
                 key={item}
@@ -37,6 +48,24 @@ const Header = () => {
             ))}
           </div>
         </div>
+
+        {/* Mobile Menu Panel */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute left-0 right-0 top-[72px] bg-[#FF9F1C] p-4 shadow-lg">
+            <div className="flex flex-col space-y-4">
+              {['Home', 'Upload', 'Statistics', 'Contact'].map((item) => (
+                <Link
+                  key={item}
+                  to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                  className="text-white py-2 px-4 hover:bg-[#FFBF69] rounded transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   );

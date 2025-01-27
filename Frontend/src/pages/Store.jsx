@@ -68,7 +68,7 @@ const Store = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-20">
+    <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-xl shadow-2xl p-6 mb-8 hover:shadow-xl transition-shadow duration-300">
         <div className="flex flex-col md:flex-row items-center gap-4">
           <div className="relative flex-1 w-full">
