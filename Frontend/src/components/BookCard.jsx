@@ -19,7 +19,7 @@ const BookDetails = ({ book, onClose }) => (
 
       <div className="grid md:grid-cols-5 gap-6 p-6">
         <div className="md:col-span-2 space-y-3">
-          <div className="relative pb-[150%] rounded-lg overflow-hidden shadow-lg bg-gray-100">
+          <div className="hidden md:block relative pb-[150%] rounded-lg overflow-hidden shadow-lg bg-gray-100">
             <img
               src={book.coverImage || '/images/default-book.jpg'}
               alt={book.title}
