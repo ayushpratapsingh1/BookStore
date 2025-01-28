@@ -85,7 +85,7 @@ const Hero = () => {
                   <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-[#FFE8D6] mb-2 md:mb-4">
                     {slide.title}
                   </h1>
-                  <p className="text-sm md:text-base lg:text-lg text-[#fff]/80 hidden md:block">
+                  <p className="text-sm md:text-base lg:text-lg text-[#E0E0E0] hidden md:block">
                     {slide.subtitle}
                   </p>
                 </div>
