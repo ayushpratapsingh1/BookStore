@@ -4,21 +4,42 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Create directories if they don't exist
-const uploadDir = path.join(__dirname, '..', 'uploads');
+// Create directories with proper permissions
+const createUploadDirs = () => {
+  const uploadDir = path.join(__dirname, '..', 'uploads');
+  const dirs = [
+    path.join(uploadDir, 'pdfs'),
+    path.join(uploadDir, 'covers')
+  ];
+  
+  dirs.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true, mode: 0o777 });
+      console.log(`Created directory: ${dir}`);
+    }
+  });
+  return uploadDir;
+};
+
+const uploadDir = createUploadDirs();
+
+// Configure multer storage
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    let folder = file.fieldname === 'pdf' ? 'pdfs' : 'covers';
-    cb(null, path.join(uploadDir, folder));
+    const folder = file.fieldname === 'pdf' ? 'pdfs' : 'covers';
+    const dest = path.join(uploadDir, folder);
+    console.log(`Saving file to: ${dest}`);
+    cb(null, dest);
   },
   filename: function(req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    const filename = `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`;
+    console.log(`Generated filename: ${filename}`);
+    cb(null, filename);
   }
 });
 
-
-// File filter
+// File filter for PDFs and images
 const fileFilter = (req, file, cb) => {
   if (file.fieldname === 'pdf') {
     if (file.mimetype === 'application/pdf') {
@@ -35,6 +56,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// Configure multer upload
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
@@ -52,17 +74,27 @@ router.get('/', async (req, res) => {
     const books = await Book.find({ isApproved: true });
     res.json(books);
   } catch (err) {
+    console.error('Error fetching books:', err);
     res.status(500).json({ message: err.message });
   }
 });
 
-// Upload endpoint
+// Upload endpoint with enhanced error handling
 router.post('/upload', (req, res) => {
   upload(req, res, async function(err) {
+    console.log('Upload request received');
+    
     if (err instanceof multer.MulterError) {
+      console.error('Multer error:', err);
       return res.status(400).json({ message: 'File upload error: ' + err.message });
     } else if (err) {
+      console.error('Unknown error:', err);
       return res.status(500).json({ message: 'Unknown error: ' + err.message });
+    }
+
+    if (!req.files?.pdf?.[0] || !req.files?.coverImage?.[0]) {
+      console.error('Missing files in request');
+      return res.status(400).json({ message: 'Both PDF and cover image are required' });
     }
 
     try {
@@ -78,8 +110,10 @@ router.post('/upload', (req, res) => {
       });
 
       const savedBook = await book.save();
+      console.log('Book saved successfully:', savedBook._id);
       res.status(201).json(savedBook);
     } catch (error) {
+      console.error('Error saving book:', error);
       res.status(400).json({ message: error.message });
     }
   });
