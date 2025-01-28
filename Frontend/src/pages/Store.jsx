@@ -16,8 +16,8 @@ const Store = () => {
 
   const fetchBooks = async () => {
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${API_URL}/api/books`, {
+      // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`/api/books`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
