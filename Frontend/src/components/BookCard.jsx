@@ -91,7 +91,7 @@ const BookDetails = ({ book, onClose }) => (
               Read Online
             </button>
             <a
-              href={book.pdfUrl}
+              href={`${API_URL}${book.pdfUrl}`}
               download
               className="flex-1 bg-[#121212] text-white px-4 py-3 rounded-full 
               hover:bg-[#2A2A2A] transition-colors flex items-center justify-center gap-2"
