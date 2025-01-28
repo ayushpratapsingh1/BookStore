@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Clock, CheckCircle, Users, Loader as LoaderIcon } from 'lucide-react';
+import { BookOpen, Clock, CheckCircle, Loader as LoaderIcon } from 'lucide-react';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -24,7 +24,7 @@ ChartJS.register(
 
 const StatCard = ({ title, value, icon: Icon, color }) => (
   <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-[0_20px_100px_rgba(255,_159,_28,_0.3)]
-   transition-all duration-300">
+   transition-all duration-500">
     <div className="flex justify-between">
       <div>
         <p className="text-gray-600 mb-1">{title}</p>
@@ -187,7 +187,8 @@ const Statistics = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg overflow-x-auto">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg overflow-x-auto 
+        hover:shadow-[0_20px_100px_rgba(255,_159,_28,_0.3)] duration-500">
           <h3 className="text-xl font-bold mb-4">Books by Genre</h3>
           <div className="min-h-[300px] w-full flex items-center justify-center">
             <Doughnut 
@@ -201,7 +202,8 @@ const Statistics = () => {
           </div>
         </div>
 
-        <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg overflow-x-auto">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg overflow-x-auto
+        hover:shadow-[0_20px_100px_rgba(255,_159,_28,_0.3)] duration-500">
           <h3 className="text-xl font-bold mb-4">Monthly Activity</h3>
           <div className="min-h-[300px] w-full">
             <Bar 
@@ -245,7 +247,8 @@ const Statistics = () => {
         <h3 className="text-xl font-bold mb-6">Genre Distribution</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Object.entries(stats.booksByGenre).map(([genre, count]) => (
-            <div key={genre} className="bg-[#FFE8D6] rounded-lg p-4 hover:shadow-md transition-all">
+            <div key={genre} className="bg-[#FFE8D6] rounded-lg p-4 hover:shadow-[0_20px_100px_rgba(255,_159,_28,_0.3)] 
+            duration-500 transition-all">
               <p className="text-[#121212] capitalize mb-2">{genre}</p>
               <p className="text-2xl font-bold text-[#FF9F1C]">{count}</p>
             </div>

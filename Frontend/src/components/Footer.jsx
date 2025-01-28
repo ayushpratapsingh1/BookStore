@@ -82,7 +82,7 @@ function Footer() {
 
         <div className="border-t border-[#FFE8D6]/10 pt-4 text-center">
           <div className="flex items-center justify-center gap-2">
-            Made with <Heart size={14} className="text-[#FF9F1C]" fill="#FF9F1C" /> by
+            Made by
             <a href="https://github.com/ayushpratapsingh1" target="_blank" rel="noopener noreferrer" 
                className="text-[#FF9F1C] hover:text-[#FFBF69] transition-colors">
               Ayush Pratap Singh
