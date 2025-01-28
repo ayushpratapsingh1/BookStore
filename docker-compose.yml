@@ -12,6 +12,5 @@ services:
     restart: unless-stopped
     volumes:
       - /home/${{ secrets.EC2_USER }}/Bookstore/uploads:/uploads
-
 volumes:
   mongodb_data:
