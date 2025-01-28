@@ -23,7 +23,7 @@ const Contact = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          access_key: 'YOUR_ACCESS_KEY_HERE', // Replace with your Web3Forms access key
+          access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY, // Replace with your Web3Forms access key
           ...formData,
         }),
       });
