@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BookOpen, Download, X, Calendar, User, Clock, Tag, FileText } from 'lucide-react';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const BookDetails = ({ book, onClose }) => (
   <div 
@@ -21,7 +22,7 @@ const BookDetails = ({ book, onClose }) => (
         <div className="md:col-span-2 space-y-3">
           <div className="hidden md:block relative pb-[150%] rounded-lg overflow-hidden shadow-lg bg-gray-100">
             <img
-              src={`http://localhost:5000${book.coverImage}` || '/images/default-book.jpg'}
+              src={`${API_URL}${book.coverImage}` || '/images/default-book.jpg'}
               alt={book.title}
               className="absolute inset-0 w-full h-full object-contain"
             />
@@ -114,7 +115,7 @@ const BookCard = ({ book }) => {
       >
         <div className="relative pb-[140%] overflow-hidden"> {/* Changed to padding-bottom method */}
           <img
-            src={`http://localhost:5000${book.coverImage}` || '/images/default-book.jpg'}
+            src={`${API_URL}${book.coverImage}` || '/images/default-book.jpg'}
             alt={book.title}
             className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ${
               isHovered ? 'scale-110 brightness-50' : 'scale-100'
