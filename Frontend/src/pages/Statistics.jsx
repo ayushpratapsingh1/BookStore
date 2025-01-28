@@ -23,7 +23,8 @@ ChartJS.register(
 );
 
 const StatCard = ({ title, value, icon: Icon, color }) => (
-  <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+  <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-[0_20px_100px_rgba(255,_159,_28,_0.3)]
+   transition-all duration-300">
     <div className="flex justify-between">
       <div>
         <p className="text-gray-600 mb-1">{title}</p>
