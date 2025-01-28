@@ -4,10 +4,12 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const BookDetails = ({ book, onClose }) => (
   <div 
-    className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+    className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4
+    transition-opacity duration-300 opacity-100"
     onClick={(e) => e.target === e.currentTarget && onClose()}
   >
-    <div className="bg-white rounded-xl w-full max-w-5xl overflow-hidden animate-fadeIn scale-95">
+    <div className="bg-white rounded-xl w-full max-w-5xl overflow-hidden animate-fadeIn transform scale-100 
+      transition-transform duration-300 shadow-2xl">
       <div className="flex justify-between items-center p-4 border-b border-gray-200">
         <h3 className="text-2xl font-bold text-[#121212]">{book.title}</h3>
         <button 
@@ -20,11 +22,12 @@ const BookDetails = ({ book, onClose }) => (
 
       <div className="grid md:grid-cols-5 gap-6 p-6">
         <div className="md:col-span-2 space-y-3">
-          <div className="hidden md:block relative pb-[150%] rounded-lg overflow-hidden shadow-lg bg-gray-100">
+          <div className="hidden md:block relative pb-[150%] rounded-lg overflow-hidden shadow-lg bg-gray-100
+            border-2 border-[#FF9F1C]/50">
             <img
               src={`${API_URL}${book.coverImage}` || '/images/default-book.jpg'}
               alt={book.title}
-              className="absolute inset-0 w-full h-full object-contain"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-110"
             />
           </div>
         </div>
@@ -81,7 +84,8 @@ const BookDetails = ({ book, onClose }) => (
           <div className="flex gap-4">
             <button
               onClick={() => window.open(`${API_URL}${book.pdfUrl}`, '_blank')}
-              className="flex-1 bg-[#FF9F1C] text-white px-4 py-3 rounded-lg hover:bg-[#FFBF69] transition-colors flex items-center justify-center gap-2"
+              className="flex-1 bg-[#FF9F1C] text-white px-4 py-3 rounded-full hover:bg-[#FFBF69] 
+              transition-colors flex items-center justify-center gap-2"
             >
               <BookOpen size={20} />
               Read Online
@@ -89,7 +93,8 @@ const BookDetails = ({ book, onClose }) => (
             <a
               href={book.pdfUrl}
               download
-              className="flex-1 bg-[#121212] text-white px-4 py-3 rounded-lg hover:bg-[#2A2A2A] transition-colors flex items-center justify-center gap-2"
+              className="flex-1 bg-[#121212] text-white px-4 py-3 rounded-full 
+              hover:bg-[#2A2A2A] transition-colors flex items-center justify-center gap-2"
             >
               <Download size={20} />
               Download
