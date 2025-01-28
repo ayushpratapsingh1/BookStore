@@ -1,8 +1,11 @@
+const router = require('express').Router();
+const Book = require('../models/Book');
+
 router.get('/', async (req, res) => {
   try {
     const totalBooks = await Book.countDocuments();
     const pendingApprovals = await Book.countDocuments({ isApproved: false });
-    const uniqueUploaders = await Book.distinct('uploader').length; // Add unique uploaders count
+    const uniqueUploaders = await Book.distinct('uploader').length;
     
     const booksByGenre = await Book.aggregate([
       {
@@ -13,7 +16,6 @@ router.get('/', async (req, res) => {
       }
     ]);
 
-    // Add monthly activity data
     const currentYear = new Date().getFullYear();
     const monthlyActivity = await Promise.all([
       Book.aggregate([
@@ -72,6 +74,8 @@ router.get('/', async (req, res) => {
       }
     });
   } catch (error) {
-    // ...error handling...
+    res.status(500).json({ message: error.message });
   }
 });
+
+module.exports = router;

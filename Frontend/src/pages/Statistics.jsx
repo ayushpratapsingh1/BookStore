@@ -108,13 +108,14 @@ const Statistics = () => {
     const currentMonth = currentDate.getMonth();
     
     // Get last 6 months
-    const lastSixMonths = months
-      .slice(currentMonth - 5, currentMonth + 1)
-      .map((month, index) => ({
-        month,
-        uploads: stats.monthlyActivity?.uploads?.[currentMonth - 5 + index] || 0,
-        approvals: stats.monthlyActivity?.approvals?.[currentMonth - 5 + index] || 0
-      }));
+    const lastSixMonths = Array.from({ length: 6 }, (_, i) => {
+      const monthIndex = (currentMonth - 5 + i + 12) % 12;
+      return {
+        month: months[monthIndex],
+        uploads: stats.monthlyActivity?.uploads?.[monthIndex] || 0,
+        approvals: stats.monthlyActivity?.approvals?.[monthIndex] || 0
+      };
+    });
 
     return {
       labels: lastSixMonths.map(m => m.month),

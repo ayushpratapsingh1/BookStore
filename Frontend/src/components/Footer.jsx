@@ -73,7 +73,8 @@ function Footer() {
                 </p>
                 <p className="flex items-center gap-3 text-[#FFE8D6]/80">
                   <MapPin size={20} className="text-[#FF9F1C]" />
-                  Lovely Professional University                </p>
+                  Lovely Professional University
+                </p>
               </div>
             </div>
           </div>

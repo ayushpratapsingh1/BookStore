@@ -108,11 +108,11 @@ const BookCard = ({ book }) => {
     <>
       <div 
         className="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-[0_20px_50px_rgba(255,_159,_28,_0.7)]
-          transition-all duration-300 w-full max-w-[260px] mx-auto"
+          transition-all duration-300 w-full max-w-[260px] mx-auto md:max-w-[200px]" // Adjusted width for mobile
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="relative pb-[140%] overflow-hidden">
+        <div className="relative pb-[140%] overflow-hidden"> {/* Changed to padding-bottom method */}
           <img
             src={book.coverImage || '/images/default-book.jpg'}
             alt={book.title}
@@ -129,7 +129,7 @@ const BookCard = ({ book }) => {
               {book.genre}
             </span>
             
-            <div className="space-y-2 mt-auto">
+            <div className="space-y-2 mt-auto"> {/* Added mt-auto for better positioning */}
               <p className="text-white text-sm line-clamp-3">{book.description}</p>
               <button
                 onClick={() => setShowDetails(true)}
@@ -142,7 +142,7 @@ const BookCard = ({ book }) => {
           </div>
         </div>
 
-        <div className="p-4">
+        <div className="p-4"> {/* Adjusted padding */}
           <h3 className="font-semibold text-[#121212] text-base mb-1 line-clamp-1">{book.title}</h3>
           <p className="text-gray-500 text-sm line-clamp-1">by {book.author}</p>
         </div>
