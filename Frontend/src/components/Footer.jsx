@@ -3,7 +3,7 @@ import { Github, Linkedin, Twitter, Mail, Heart, BookOpen, Navigation, MapPin, P
 
 function Footer() {
   const socialLinks = [
-    { name: 'GitHub', icon: <Github size={20} />, url: 'https://github.com/ayushpratapsingh1' },
+    { name: 'Github', icon: <Github size={20} />, url: 'https://github.com/ayushpratapsingh1' },
     { name: 'LinkedIn', icon: <Linkedin size={20} />, url: 'https://linkedin.com/in/ayushpratapsingh1' },
     { name: 'Email', icon: <Mail size={20} />, url: 'mailto:ayushpratapds@gmail.com' }
   ];
