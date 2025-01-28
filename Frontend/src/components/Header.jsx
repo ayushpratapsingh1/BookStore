@@ -15,10 +15,10 @@ const Header = () => {
             className="flex items-center gap-3 group"
           >
             <BookOpen 
-              className="text-[#FF9F1C] transform transition-transform group-hover:scale-110" 
+              className="text-[#fff] transform transition-transform group-hover:scale-110 duration-400" 
               size={28} 
             />
-            <span className="text-2xl font-bold text-[#121212] group-hover:text-[#FF9F1C] transition-colors">
+            <span className="text-2xl font-bold text-[#121212] group-hover:text-[#fff] transition-colors duration-400">
               BookStore
             </span>
           </Link>

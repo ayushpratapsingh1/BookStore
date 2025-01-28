@@ -67,7 +67,8 @@ const Upload = () => {
 
   return (
     <div className="container mx-auto px-6 py-12">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-sm p-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8 
+      hover:shadow-[0_20px_50px_rgba(255,_159,_28,_0.3)] duration-300">
         <h2 className="text-2xl font-semibold text-[#212121] mb-8">Share a Book</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
