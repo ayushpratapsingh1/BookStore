@@ -108,13 +108,14 @@ const BookCard = ({ book }) => {
     <>
       <div 
         className="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-[0_20px_50px_rgba(255,_159,_28,_0.7)]
-          transition-all duration-300 w-full max-w-[260px] mx-auto md:max-w-[200px]" // Adjusted width for mobile
+          transition-all duration-300 w-full max-w-[260px] mx-auto md:max-w-[300px]" // Adjusted width for mobile
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => setShowDetails(true)}
       >
         <div className="relative pb-[140%] overflow-hidden"> {/* Changed to padding-bottom method */}
           <img
-            src={book.coverImage || '/images/default-book.jpg'}
+            src={`${book.coverImage}` || '/images/default-book.jpg'}
             alt={book.title}
             className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 ${
               isHovered ? 'scale-110 brightness-50' : 'scale-100'
@@ -131,13 +132,6 @@ const BookCard = ({ book }) => {
             
             <div className="space-y-2 mt-auto"> {/* Added mt-auto for better positioning */}
               <p className="text-white text-sm line-clamp-3">{book.description}</p>
-              <button
-                onClick={() => setShowDetails(true)}
-                className="w-full bg-[#FF9F1C] text-white py-2 rounded hover:bg-[#FFBF69] transition-colors flex items-center justify-center gap-2"
-              >
-                <BookOpen size={16} />
-                View Details
-              </button>
             </div>
           </div>
         </div>
