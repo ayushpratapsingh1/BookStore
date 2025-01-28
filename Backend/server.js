@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173', // Vite default port
+    origin: 'https://aps-book-store.vercel.app'||'http://localhost:5173', // Vite default port
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
