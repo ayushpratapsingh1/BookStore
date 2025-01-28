@@ -8,19 +8,24 @@ const Hero = () => {
 
   const slides = [
     { 
-      image: '/images/1.jpg', 
+      image: '/images/1.svg', 
       title: 'Discover Amazing Books',
       subtitle: 'Your gateway to endless knowledge and entertainment'
     },
     { 
-      image: '/images/2.jpg', 
+      image: '/images/2.svg', 
       title: 'Share Your Knowledge',
       subtitle: 'Upload and share your favorite books with the community'
     },
     { 
-      image: '/images/3.jpg', 
+      image: '/images/3.svg', 
       title: 'Read Anywhere',
       subtitle: 'Access your books anytime, anywhere'
+    },
+    { 
+      image: '/images/4.svg', 
+      title: 'Download Anywhere',
+      subtitle: 'Download your books anytime, anywhere'
     }
   ];
 
