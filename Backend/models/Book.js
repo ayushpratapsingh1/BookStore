@@ -17,7 +17,8 @@ const bookSchema = new mongoose.Schema({
     }
   },
   isApproved: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  uploader: { type: String, required: true }
 }, {
   timestamps: true
 });
