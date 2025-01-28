@@ -32,7 +32,7 @@ jobs:
         host: ${{ secrets.EC2_PUBLIC_IP }}
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
-        source: "docker-compose.yml"
+        source: "Docker-compose.yml"
         target: "/home/${{ secrets.EC2_USER }}/Bookstore/"
 
     - name: Deploy to EC2
