@@ -5,18 +5,27 @@ const path = require('path');
 const fs = require('fs');
 
 // Create directories if they don't exist
-const uploadDir = path.join(__dirname, '..', 'uploads');
+const dirs = ['./uploads', './uploads/pdfs', './uploads/covers'];
+dirs.forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+});
+
+// Configure multer storage
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    let folder = file.fieldname === 'pdf' ? 'pdfs' : 'covers';
-    cb(null, path.join(uploadDir, folder));
+    if (file.fieldname === 'pdf') {
+      cb(null, './uploads/pdfs/');
+    } else if (file.fieldname === 'coverImage') {
+      cb(null, './uploads/covers/');
+    }
   },
   filename: function(req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
-
 
 // File filter
 const fileFilter = (req, file, cb) => {
