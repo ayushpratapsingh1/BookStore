@@ -80,7 +80,7 @@ const BookDetails = ({ book, onClose }) => (
 
           <div className="flex gap-4">
             <button
-              onClick={() => window.open(book.pdfUrl)}
+              onClick={() => window.open(`${API_URL}${book.pdfUrl}`, '_blank')}
               className="flex-1 bg-[#FF9F1C] text-white px-4 py-3 rounded-lg hover:bg-[#FFBF69] transition-colors flex items-center justify-center gap-2"
             >
               <BookOpen size={20} />
