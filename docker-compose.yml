@@ -11,6 +11,6 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     restart: unless-stopped
     volumes:
-      - /home/${{ secrets.EC2_USER }}/Bookstore/uploads:/uploads
+      - /home/${ EC2_USER }/Bookstore/uploads:/uploads
 volumes:
   mongodb_data:
