@@ -23,7 +23,7 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./Backend
         docker push ${{ secrets.DOCKER_USERNAME }}/bakcend:latest
 
     - name: Upload docker-compose.yml to EC2
