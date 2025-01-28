@@ -24,7 +24,7 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       run: |
         docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./Backend
-        docker push ${{ secrets.DOCKER_USERNAME }}/bakcend:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
     - name: Upload docker-compose.yml to EC2
       uses: appleboy/scp-action@v0.1.6
