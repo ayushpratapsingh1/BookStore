@@ -33,6 +33,49 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch((err) => console.error('MongoDB connection error:', err));
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const findAvailablePort = async (startPort) => {
+  const net = require('net');
+  
+  const isPortAvailable = (port) => {
+    return new Promise((resolve) => {
+      const server = net.createServer();
+      server.listen(port, () => {
+        server.close();
+        resolve(true);
+      });
+      server.on('error', () => resolve(false));
+    });
+  };
+
+  let port = startPort;
+  while (!(await isPortAvailable(port))) {
+    port++;
+  }
+  return port;
+};
+
+// Replace existing app.listen with:
+const startServer = async () => {
+  try {
+    const availablePort = await findAvailablePort(PORT);
+    const server = app.listen(availablePort, () => {
+      console.log(`Server running on port ${availablePort}`);
+      console.log(`API URL: http://localhost:${availablePort}`);
+    });
+
+    server.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.log(`Port ${availablePort} is busy, trying next port...`);
+        server.close();
+        startServer();
+      } else {
+        console.error('Server error:', error);
+      }
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();

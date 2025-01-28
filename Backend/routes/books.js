@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Create directories if they don't exist
+// Create directories
 const dirs = ['./uploads', './uploads/pdfs', './uploads/covers'];
 dirs.forEach(dir => {
   if (!fs.existsSync(dir)) {
@@ -12,16 +12,13 @@ dirs.forEach(dir => {
   }
 });
 
-// Configure multer storage
+// Multer storage configuration
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    if (file.fieldname === 'pdf') {
-      cb(null, './uploads/pdfs/');
-    } else if (file.fieldname === 'coverImage') {
-      cb(null, './uploads/covers/');
-    }
+  destination: (req, file, cb) => {
+    const dest = file.fieldname === 'pdf' ? './uploads/pdfs/' : './uploads/covers/';
+    cb(null, dest);
   },
-  filename: function(req, file, cb) {
+  filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   }
@@ -30,48 +27,40 @@ const storage = multer.diskStorage({
 // File filter
 const fileFilter = (req, file, cb) => {
   if (file.fieldname === 'pdf') {
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type, only PDF is allowed!'), false);
-    }
+    cb(null, file.mimetype === 'application/pdf');
   } else if (file.fieldname === 'coverImage') {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type, only images are allowed!'), false);
-    }
+    cb(null, /^image\/(jpeg|png|jpg)$/.test(file.mimetype));
+  } else {
+    cb(new Error('Invalid file type'), false);
   }
 };
 
+// Configure multer upload
 const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
+  storage,
+  fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB limit
+    fileSize: 5 * 1024 * 1024, // 5MB for images
+    files: 2 // Allow both PDF and cover
   }
 }).fields([
   { name: 'pdf', maxCount: 1 },
   { name: 'coverImage', maxCount: 1 }
 ]);
 
-// Get all approved books
-router.get('/', async (req, res) => {
-  try {
-    const books = await Book.find({ isApproved: true });
-    res.json(books);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Upload endpoint
+// Routes
 router.post('/upload', (req, res) => {
-  upload(req, res, async function(err) {
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json({ message: 'File upload error: ' + err.message });
-    } else if (err) {
-      return res.status(500).json({ message: 'Unknown error: ' + err.message });
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ 
+        message: err.message || 'Error uploading files'
+      });
+    }
+
+    if (!req.files?.pdf || !req.files?.coverImage) {
+      return res.status(400).json({
+        message: 'Both PDF and cover image are required'
+      });
     }
 
     try {
@@ -80,7 +69,6 @@ router.post('/upload', (req, res) => {
         author: req.body.author,
         description: req.body.description,
         genre: req.body.genre,
-        uploader: req.body.uploader,
         pdfUrl: `/uploads/pdfs/${req.files.pdf[0].filename}`,
         coverImage: `/uploads/covers/${req.files.coverImage[0].filename}`,
         isApproved: false
