@@ -21,11 +21,6 @@ const Hero = () => {
       image: '/images/3.jpg', 
       title: 'Read Anywhere',
       subtitle: 'Access your books anytime, anywhere'
-    },
-    { 
-      image: '/images/4.jpg', 
-      title: 'Download Anywhere',
-      subtitle: 'Download your books anytime, anywhere'
     }
   ];
 
