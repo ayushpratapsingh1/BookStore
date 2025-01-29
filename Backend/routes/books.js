@@ -6,7 +6,7 @@ const fs = require('fs');
 
 // Create directories with proper permissions
 const createUploadDirs = () => {
-  const uploadDir = path.join(__dirname, '..', 'uploads');
+  const uploadDir = '/app/uploads';
   const dirs = [
     path.join(uploadDir, 'pdfs'),
     path.join(uploadDir, 'covers')
@@ -84,13 +84,10 @@ router.post('/upload', (req, res) => {
   upload(req, res, async function(err) {
     console.log('Upload request received');
     
-    if (err instanceof multer.MulterError) {
-      console.error('Multer error:', err);
-      return res.status(400).json({ message: 'File upload error: ' + err.message });
-    } else if (err) {
-      console.error('Unknown error:', err);
-      return res.status(500).json({ message: 'Unknown error: ' + err.message });
-    }
+    if (err) {
+      console.error('File upload error:', err);
+      return res.status(400).json({ message: err.message });
+    }    
 
     if (!req.files?.pdf?.[0] || !req.files?.coverImage?.[0]) {
       console.error('Missing files in request');
