@@ -4,13 +4,31 @@ import { BookOpen, Download, X, Clock, User, Tag, FileText } from 'lucide-react'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const BookDetails = ({ book, onClose }) => {
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = `${API_URL}${book.pdfUrl}`;
-    link.download = book.title; // Set file name
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    try {
+      setIsDownloading(true);
+      const response = await fetch(`${API_URL}${book.pdfUrl}`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      
+      if (!response.ok) throw new Error('Download failed');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${book.title}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Failed to download file');
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
@@ -35,7 +53,7 @@ const BookDetails = ({ book, onClose }) => {
               <img
                 src={`${API_URL}${book.coverImage}` || '/images/default-book.jpg'}
                 alt={book.title}
-                className="w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
+                className="hidden md:block w-full h-auto object-cover transition-transform duration-500 hover:scale-105"
               />
             </div>
           </div>
