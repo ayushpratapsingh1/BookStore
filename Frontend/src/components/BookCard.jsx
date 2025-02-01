@@ -2,30 +2,31 @@ import { useState } from 'react';
 import { BookOpen, Download, X, Calendar, User, Clock, Tag, FileText } from 'lucide-react';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-const handleDownload = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await fetch(`${API_URL}${book.pdfUrl}`, {
-      method: 'GET',
-      credentials: 'include'
-    });
-    
-    if (!response.ok) throw new Error('Download failed');
-    
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${book.title}.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error('Download error:', error);
-  }
-};
-const BookDetails = ({ book, onClose }) => (
+const BookDetails = ({ book, onClose }) => {
+  const handleDownload = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_URL}${book.pdfUrl}`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+      
+      if (!response.ok) throw new Error('Download failed');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${book.title}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download error:', error);
+    }
+  };
+  (
   <div 
     className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4
     transition-opacity duration-300 opacity-100"
@@ -126,7 +127,7 @@ const BookDetails = ({ book, onClose }) => (
       </div>
     </div>
   </div>
-);
+)};
 
 const BookCard = ({ book }) => {
   const [showDetails, setShowDetails] = useState(false);
