@@ -6,6 +6,8 @@ import Upload from './pages/Upload';
 import Contact from './pages/Contact';
 import Statistics from './pages/Statistics';
 import Hero from './components/Hero';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Layout = ({ children, showHero = false }) => (
   <div className="min-h-screen flex flex-col">
@@ -34,6 +36,18 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Footer />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
       </div>
     </Router>
   );

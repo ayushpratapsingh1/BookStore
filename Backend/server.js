@@ -12,11 +12,19 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-    origin: 'https://apsbookstore.vercel.app'||'http://localhost:5173', // Vite default port
+    origin: ['https://apsbookstore.vercel.app', 'http://localhost:5173'], // Vite default port
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Add headers middleware
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
