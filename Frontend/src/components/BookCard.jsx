@@ -9,7 +9,11 @@ const BookDetails = ({ book, onClose }) => {
     e.preventDefault();
     try {
       const response = await fetch(`${API_URL}${book.pdfUrl}`, {
-        credentials: 'include'
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/pdf'
+        }
       });
       
       if (!response.ok) throw new Error('Download failed');
@@ -19,6 +23,7 @@ const BookDetails = ({ book, onClose }) => {
       const a = document.createElement('a');
       a.href = url;
       a.download = `${book.title}.pdf`;
+      a.target = '_blank';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -32,7 +37,8 @@ const BookDetails = ({ book, onClose }) => {
 
   const handleReadOnline = (e) => {
     e.preventDefault();
-    window.open(`${API_URL}${book.pdfUrl}`, '_blank', 'noopener,noreferrer');
+    const pdfUrl = `${API_URL}${book.pdfUrl}`;
+    window.open(pdfUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
