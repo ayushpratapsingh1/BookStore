@@ -4,6 +4,8 @@ import { BookOpen, Download, X, Clock, User, Tag, FileText } from 'lucide-react'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const BookDetails = ({ book, onClose }) => {
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
@@ -123,11 +125,13 @@ const BookDetails = ({ book, onClose }) => {
               </button>
               <button
                 onClick={handleDownload}
+                disabled={isDownloading}
                 className="flex-1 bg-[#121212] text-white px-4 py-3 rounded-full 
-                hover:bg-[#2A2A2A] transition-colors flex items-center justify-center gap-2"
+                hover:bg-[#2A2A2A] transition-colors flex items-center justify-center gap-2
+                disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Download size={20} />
-                Download
+                <Download size={20} className={isDownloading ? 'animate-spin' : ''} />
+                {isDownloading ? 'Downloading...' : 'Download'}
               </button>
             </div>
           </div>
