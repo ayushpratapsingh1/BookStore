@@ -2,6 +2,29 @@ import { useState } from 'react';
 import { BookOpen, Download, X, Calendar, User, Clock, Tag, FileText } from 'lucide-react';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
+const handleDownload = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await fetch(`${API_URL}${book.pdfUrl}`, {
+      method: 'GET',
+      credentials: 'include'
+    });
+    
+    if (!response.ok) throw new Error('Download failed');
+    
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${book.title}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Download error:', error);
+  }
+};
 const BookDetails = ({ book, onClose }) => (
   <div 
     className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4
@@ -90,15 +113,14 @@ const BookDetails = ({ book, onClose }) => (
               <BookOpen size={20} />
               Read Online
             </button>
-            <a
-              href={`${API_URL}${book.pdfUrl}`}
-              download
+            <button
+              onClick={handleDownload}
               className="flex-1 bg-[#121212] text-white px-4 py-3 rounded-full 
               hover:bg-[#2A2A2A] transition-colors flex items-center justify-center gap-2"
             >
               <Download size={20} />
               Download
-            </a>
+            </button>
           </div>
         </div>
       </div>
