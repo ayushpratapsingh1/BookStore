@@ -79,24 +79,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Add PDF download route
-router.get('/download/:id', async (req, res) => {
-  try {
-    const book = await Book.findById(req.params.id);
-    if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
-    }
-
-    const filePath = path.join(__dirname, '..', book.pdfUrl);
-    res.header('Content-Type', 'application/pdf');
-    res.header('Content-Disposition', `attachment; filename="${book.title}.pdf"`);
-    res.sendFile(filePath);
-  } catch (error) {
-    console.error('Download error:', error);
-    res.status(500).json({ message: 'Error downloading file' });
-  }
-});
-
 // Upload endpoint with enhanced error handling
 router.post('/upload', (req, res) => {
   upload(req, res, async function(err) {
