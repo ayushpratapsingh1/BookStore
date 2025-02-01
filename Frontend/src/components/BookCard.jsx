@@ -4,9 +4,11 @@ import { BookOpen, Download, X, Clock, User, Tag, FileText } from 'lucide-react'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const BookDetails = ({ book, onClose }) => {
-  const handleDownload = async (e) => {
-    e.preventDefault();
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
     try {
+      setIsDownloading(true);
       const response = await fetch(`${API_URL}${book.pdfUrl}`, {
         method: 'GET',
         credentials: 'include'
@@ -25,6 +27,9 @@ const BookDetails = ({ book, onClose }) => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Download error:', error);
+      toast.error('Failed to download file');
+    } finally {
+      setIsDownloading(false);
     }
   };
 
