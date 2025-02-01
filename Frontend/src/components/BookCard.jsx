@@ -9,6 +9,7 @@ const BookDetails = ({ book, onClose }) => {
     e.preventDefault();
     try {
       const response = await fetch(`${API_URL}${book.pdfUrl}`, {
+        method: 'GET',
         credentials: 'include'
       });
       
