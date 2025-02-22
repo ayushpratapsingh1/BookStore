@@ -25,7 +25,6 @@ const BookDetails = ({ book, onClose }) => {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-      toast.success('File downloaded successfully');
     } catch (error) {
       console.error('Download error:', error);
       toast.error('Failed to download file');
