@@ -40,7 +40,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 mt-16">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg hover:shadow-[0_20px_50px_rgba(255,_159,_28,_0.3)] transition-all duration-500">
         <div className="grid md:grid-cols-5 gap-0">
           <div className="md:col-span-2 bg-gradient-to-br from-[#FF9F1C] to-[#FFBF69] p-8 text-white rounded-t-2xl 

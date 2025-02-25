@@ -7,7 +7,7 @@ const Header = () => {
   const location = useLocation();
 
   return (
-    <header className="w-full top-0 z-50 blur-header bg-gradient-to-r from-[#FF9F1C] to-[#FFBF69]">
+<header className="w-[90%] md:w-[80%] mx-auto justify-center items-center rounded-2xl fixed left-1/2 -translate-x-1/2 top-2 z-50 backdrop-blur-md bg-gradient-to-r from-[#FF9F1C]/90 to-[#FFBF69]/90 shadow-lg">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link 
@@ -51,7 +51,7 @@ const Header = () => {
 
         {/* Mobile Menu Panel */}
         {isMenuOpen && (
-          <div className="md:hidden absolute left-0 right-0 top-[72px] bg-[#FF9F1C] p-4 shadow-lg">
+          <div className="md:hidden absolute left-0 right-0 top-[80px] bg-[#FF9F1C] p-4 rounded-2xl shadow-lg">
             <div className="flex flex-col space-y-4">
               {['Home', 'Upload', 'Statistics', 'Contact'].map((item) => (
                 <Link
