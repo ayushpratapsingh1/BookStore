@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Loader } from 'lucide-react';
 
 const ConfettiEffect = () => {
   const [particles, setParticles] = useState([]);
@@ -63,7 +63,8 @@ const ConfettiEffect = () => {
 const Upload = () => {
   const navigate = useNavigate();
   const [preview, setPreview] = useState(null);
-  const [uploaded, setUploaded] = useState(false); // Change to false for production
+  const [uploaded, setUploaded] = useState(false); 
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -126,6 +127,7 @@ const Upload = () => {
     data.append('uploader', formData.uploader);
 
     try {
+      setIsUploading(true); // Start loading
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       const response = await fetch(`${API_URL}/api/books/upload`, {
         method: 'POST',
@@ -140,6 +142,8 @@ const Upload = () => {
     } catch (error) {
       console.error('Error uploading book:', error);
       alert('Failed to upload book. Please try again.');
+    } finally {
+      setIsUploading(false); // End loading regardless of outcome
     }
   };
 
@@ -181,6 +185,20 @@ const Upload = () => {
       <div className={`max-w-3xl mx-auto bg-white rounded-lg p-8 shadow-[0_20px_50px_rgba(255,_159,_28,_0.3)]
       hover:shadow-[0_20px_100px_rgba(255,_159,_28,_0.3)] duration-300 ${uploaded ? 'opacity-20 pointer-events-none' : ''}`}>
         <h2 className="text-2xl font-semibold text-[#212121] mb-8">Share a Book</h2>
+        
+        {/* Upload progress overlay */}
+        {isUploading && (
+          <div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center rounded-lg z-10">
+            <Loader className="h-12 w-12 text-[#FF9F1C] animate-spin mb-4" />
+            <p className="text-lg font-medium text-gray-700">
+              Uploading your book...
+            </p>
+            <div className="w-64 h-2 bg-gray-200 rounded-full mt-4 overflow-hidden">
+              <div className="h-full bg-[#FF9F1C] animate-pulse rounded-full"></div>
+            </div>
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-6">
@@ -286,9 +304,21 @@ const Upload = () => {
 
           <button
             type="submit"
-            className="w-full bg-[#FFC107] text-[#212121] py-3 rounded-md hover:bg-[#1A237E] hover:text-[#F5F5F5] transition-colors font-medium mt-8"
+            disabled={isUploading}
+            className={`w-full cursor-pointer py-3 rounded-md font-medium mt-8 transition-colors 
+              ${isUploading 
+                ? 'bg-gray-400 text-white cursor-not-allowed'
+                : 'bg-[#FFC107] text-[#212121] hover:bg-[#1A237E] hover:text-[#F5F5F5]'
+              }`}
           >
-            Upload Book
+            {isUploading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader size={20} className="animate-spin" />
+                Uploading...
+              </span>
+            ) : (
+              'Upload Book'
+            )}
           </button>
         </form>
       </div>

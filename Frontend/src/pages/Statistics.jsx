@@ -139,7 +139,7 @@ const Statistics = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8 flex items-center justify-center">
+      <div className="container mx-auto px-4 py-8 mt-16 flex items-center justify-center">
         <div className="flex items-center gap-2">
           <LoaderIcon className="animate-spin" size={24} />
           <span>Loading statistics...</span>
