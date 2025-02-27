@@ -1,9 +1,69 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CheckCircle } from 'lucide-react';
+
+const ConfettiEffect = () => {
+  const [particles, setParticles] = useState([]);
+
+  useEffect(() => {
+    // Create confetti particles
+    const colors = ['#FF9F1C', '#FFBF69', '#FFE8D6', '#FFC107', '#ffffff'];
+    const shapes = ['square', 'circle'];
+    const newParticles = Array.from({ length: 500}, (_, i) => ({
+      id: i,
+      x: Math.random() * 100, // % position
+      y: -10, // start above viewport
+      size: Math.random() * 10 + 3, // between 3-13px
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      shape: shapes[Math.floor(Math.random() * shapes.length)],
+      velocity: Math.random() * 3 + 2,
+      delay: Math.random() * 3
+    }));
+    
+    setParticles(newParticles);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[60]" aria-hidden="true">
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          className="absolute"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            backgroundColor: p.color,
+            borderRadius: p.shape === 'circle' ? '50%' : '0',
+            transform: `rotate(${p.rotation}deg)`,
+            animation: `fall ${p.velocity}s linear forwards`,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+
+      <style jsx="true">{`
+        @keyframes fall {
+          from {
+            transform: translateY(0) rotate(0deg);
+            opacity: 1;
+          }
+          to {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
 
 const Upload = () => {
   const navigate = useNavigate();
   const [preview, setPreview] = useState(null);
+  const [uploaded, setUploaded] = useState(false); // Change to false for production
   const [formData, setFormData] = useState({
     title: '',
     author: '',
@@ -17,6 +77,16 @@ const Upload = () => {
 
   const fileInputRef = useRef(null);
   const coverInputRef = useRef(null);
+
+  // Redirect after success with delay
+  useEffect(() => {
+    if (uploaded) {
+      const timer = setTimeout(() => {
+        navigate('/');
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [uploaded, navigate]);
 
   const handleBoxClick = (inputRef) => {
     inputRef.current.click();
@@ -36,11 +106,19 @@ const Upload = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!formData.title || !formData.author || !formData.genre || 
+        !formData.description || !formData.pdf || !formData.coverImage) {
+      alert("Please fill all required fields");
+      return;
+    }
+    
     const data = new FormData();
     
-    // Match field names with backend multer config
-    data.append('pdf', formData.pdf);                // Changed from 'bookPdf'
-    data.append('coverImage', formData.coverImage);  // Changed from 'bookCover'
+    // Add form data
+    data.append('pdf', formData.pdf);
+    data.append('coverImage', formData.coverImage);
     data.append('title', formData.title);
     data.append('author', formData.author);
     data.append('description', formData.description);
@@ -55,8 +133,7 @@ const Upload = () => {
       });
 
       if (response.ok) {
-        alert('Book uploaded successfully! Waiting for approval.');
-        navigate('/');
+        setUploaded(true); // This will trigger the success screen
       } else {
         throw new Error('Upload failed');
       }
@@ -67,9 +144,42 @@ const Upload = () => {
   };
 
   return (
-    <div className="container mx-auto px-6 py-12 mt-16">
-      <div className="max-w-3xl mx-auto bg-white rounded-lg p-8 shadow-[0_20px_50px_rgba(255,_159,_28,_0.3)]
-      hover:shadow-[0_20px_100px_rgba(255,_159,_28,_0.3)] duration-300">
+    <div className="container mx-auto px-6 py-12 mt-16 relative">
+      {/* Success overlay with confetti */}
+      {uploaded && (
+        <>
+          <ConfettiEffect />
+          
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-md" onClick={() => navigate('/')}></div>
+            
+            <div className="relative z-50 bg-white/10 backdrop-blur-md p-8 rounded-xl shadow-2xl max-w-md mx-auto text-center animate-fadeIn">
+              <div className="mb-6">
+                <div className="mx-auto w-24 h-24 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-500/50">
+                  <CheckCircle size={48} className="text-white" />
+                </div>
+              </div>
+              <h2 className="text-3xl font-bold text-white mb-4">Success!</h2>
+              <p className="text-xl text-white/90 mb-6">
+                Your book has been uploaded successfully!
+              </p>
+              <p className="text-white/75 mb-6">
+                You will be redirected to the home page in a few seconds...
+              </p>
+              <button 
+                onClick={() => navigate('/')} 
+                className="bg-[#FF9F1C] hover:bg-[#FFBF69] text-white px-6 py-3 rounded-lg transition-colors"
+              >
+                Go to Homepage
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+      
+      {/* Form container with conditional opacity */}
+      <div className={`max-w-3xl mx-auto bg-white rounded-lg p-8 shadow-[0_20px_50px_rgba(255,_159,_28,_0.3)]
+      hover:shadow-[0_20px_100px_rgba(255,_159,_28,_0.3)] duration-300 ${uploaded ? 'opacity-20 pointer-events-none' : ''}`}>
         <h2 className="text-2xl font-semibold text-[#212121] mb-8">Share a Book</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
