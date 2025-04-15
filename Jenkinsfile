@@ -71,9 +71,17 @@ pipeline {
         }
     }
 
-    post {
-        always {
-            cleanWs()  // Clean up workspace after the job completes
+        post {
+            always {
+                node {
+                    cleanWs()
+                }
+            }
+        }
+        success {
+            echo 'Deployment completed successfully!'
+        }
+        failure {
+            echo 'Deployment failed!'
         }
     }
-}
