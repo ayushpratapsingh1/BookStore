@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = credentials('DOCKER_USERNAME')          // Jenkins credentials for Docker
-        DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')          // Jenkins credentials for Docker
-        EC2_PUBLIC_IP = credentials('EC2_PUBLIC_IP')              // Jenkins credentials for EC2 IP
-        EC2_USER = credentials('EC2_USER')                        // Jenkins credentials for EC2 username
-        PRIVATE_KEY = credentials('EC2_PRIVATE_KEY')              // Jenkins SSH private key
-        MONGO_URI = credentials('MONGO_URI')                      // Mongo URI for environment
-        AWS_REGION = credentials('AWS_REGION')                    // AWS Region
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')      // AWS Access Key
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY') // AWS Secret Key
+        DOCKER_USERNAME = credentials('DOCKER_USERNAME')
+        DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
+        EC2_PUBLIC_IP = credentials('EC2_PUBLIC_IP')
+        EC2_USER = credentials('EC2_USER')
+        PRIVATE_KEY = credentials('EC2_PRIVATE_KEY')
+        MONGO_URI = credentials('MONGO_URI')
+        AWS_REGION = credentials('AWS_REGION')
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
 
     stages {
@@ -51,7 +51,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh -i ${PRIVATE_KEY} -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_PUBLIC_IP} << 'EOF'
+                    ssh -i ${PRIVATE_KEY} -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_PUBLIC_IP} << EOF
                     cd /home/${EC2_USER}/Bookstore/
                     export DOCKER_USERNAME=${DOCKER_USERNAME}
                     export AWS_REGION=${AWS_REGION}
@@ -74,7 +74,9 @@ pipeline {
     post {
         always {
             echo "Cleaning workspace..."
-            cleanWs()
+            node {
+                cleanWs()
+            }
         }
     }
 }
