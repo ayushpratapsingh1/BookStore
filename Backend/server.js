@@ -60,7 +60,7 @@ const findAvailablePort = async (startPort) => {
       const availablePort = await findAvailablePort(PORT);
       const server = app.listen(availablePort, () => {
         console.log(`Server running on port ${availablePort}`);
-        console.log(`API URL: http://localhost:${availablePort} ${MONGO_URI}`);
+        console.log(`API URL: http://localhost:${availablePort} ${process.env.MONGO_URI}`);
       });
   
       server.on('error', (error) => {
