@@ -55,7 +55,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to EC2') {
+        stage('Deploy to EC2 machine') {
             steps {
                 sshPublisher(publishers: [
                     sshPublisherDesc(
