@@ -62,20 +62,20 @@ pipeline {
                         configName: 'EC2_SSH',
                         transfers: [
                             sshTransfer(
-                                execCommand: '''
+                                execCommand: """
                                         cd Bookstore &&
-                                        export DOCKER_USERNAME="$DOCKER_USERNAME"
-                                        export AWS_REGION="$AWS_REGION"
-                                        export MONGO_URI="$MONGO_URI"
-                                        export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
-                                        export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+                                        export DOCKER_USERNAME=${DOCKER_USERNAME}
+                                        export AWS_REGION=${AWS_REGION}
+                                        export MONGO_URI=${MONGO_URI}
+                                        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                                        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
 
                                         docker-compose down &&
-                                        docker rmi $DOCKER_USERNAME/backend:latest || true &&
+                                        docker rmi ${DOCKER_USERNAME}/backend:latest || true &&
                                         docker system prune -af &&
                                         docker-compose pull &&
                                         docker-compose up -d --force-recreate
-                                    ''',
+                                    """,
                                 execTimeout: 120000
                             )
                         ],
