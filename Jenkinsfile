@@ -47,7 +47,7 @@ pipeline {
                             \$PEM_CONTENT | Out-File -FilePath \$pemPath -Encoding ascii
 
                             Write-Host 'Fixing PEM file permissions...'
-                            icacls \$pemPath /inheritance:r /grant:r "$env:USERNAME:F"
+                            icacls \$pemPath /inheritance:r /grant:r "$env:ayush:F"
 
                             Write-Host 'Uploading docker-compose.yml to EC2...'
                             scp -i \$pemPath -o StrictHostKeyChecking=no docker-compose.yml ${EC2_USER}@${EC2_PUBLIC_IP}:/home/${EC2_USER}/Bookstore/
@@ -70,7 +70,7 @@ pipeline {
                             \$PEM_CONTENT = \$env:PEM_CONTENT -replace "`r`n", "`n"
                             \$PEM_CONTENT | Out-File -FilePath \$pemPath -Encoding ascii
 
-                            icacls \$pemPath /inheritance:r /grant:r "$env:USERNAME:F"
+                            icacls \$pemPath /inheritance:r /grant:r "$env:ayush:F"
 
                             Write-Host 'Connecting to EC2...'
                             ssh -i \$pemPath -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_PUBLIC_IP} "
