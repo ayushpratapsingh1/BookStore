@@ -1,6 +1,6 @@
 services:
   server:
-    image: ${DOCKER_USERNAME}/backend:latest
+    image: ayuspratapsingh1/backend:latest
     ports:
       - "5000:5000"
     environment:
