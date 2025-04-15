@@ -49,7 +49,7 @@ pipeline {
                             Write-Host 'Fixing PEM file permissions...'
                             icacls $pemPath /inheritance:r
                             icacls $pemPath /remove "BUILTIN\\Users" "Everyone"
-                            icacls $pemPath /grant:r "$(whoami):F"
+                            icacls $pemPath /grant:r "\$(whoami):F"
 
 
                             Write-Host 'Uploading docker-compose.yml to EC2...'
@@ -75,7 +75,7 @@ pipeline {
 
                             icacls $pemPath /inheritance:r
                             icacls $pemPath /remove "BUILTIN\\Users" "Everyone"
-                            icacls $pemPath /grant:r "$(whoami):F"
+                            icacls $pemPath /grant:r "\$(whoami):F"
 
 
                             Write-Host 'Connecting to EC2...'
