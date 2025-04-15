@@ -62,7 +62,7 @@ pipeline {
                         configName: 'EC2_SSH',
                         transfers: [
                             sshTransfer(
-                                execCommand: execCommand: '''
+                                execCommand: '''
                                         cd Bookstore &&
                                         export DOCKER_USERNAME=$DOCKER_USERNAME &&
                                         export AWS_REGION=$AWS_REGION &&
