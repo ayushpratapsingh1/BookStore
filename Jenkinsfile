@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Checkout code') {
             steps {
-                git credentialsId: 'Github', url: 'https://github.com/ayushpratapsingh1/BookStore.git'
+                git branch: 'main', credentialsId: 'Github', url: 'https://github.com/ayushpratapsingh1/BookStore.git'
             }
         }
 
