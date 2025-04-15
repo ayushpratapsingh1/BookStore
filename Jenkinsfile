@@ -43,13 +43,17 @@ pipeline {
                         powershell """
                             Write-Host 'Creating PEM file...'
                             \$pemPath = "deploy.pem"
-                            \$PEM_CONTENT = \$env:PEM_CONTENT -replace "`r`n", "`n"
+                            \$PEM_CONTENT = \$env:PEM_CONTENT -replace "`r`n", "`n"  # Normalize line breaks
                             \$PEM_CONTENT | Out-File -FilePath \$pemPath -Encoding ascii
 
                             Write-Host 'Fixing PEM file permissions...'
                             icacls \$pemPath /inheritance:r
                             icacls \$pemPath /remove "BUILTIN\\Users" "Everyone"
                             icacls \$pemPath /grant:r "\$(whoami):F"
+
+                            # Confirm file contents (optional for debugging)
+                            Write-Host "PEM File Content: \$(Get-Content \$pemPath)"
+
 
                             Write-Host 'Uploading docker-compose.yml to EC2...'
                             scp -i \$pemPath -o StrictHostKeyChecking=no docker-compose.yml ${EC2_USER}@${EC2_PUBLIC_IP}:/home/${EC2_USER}/Bookstore/
@@ -67,14 +71,19 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'EC2_PRIVATE_KEY_STRING', variable: 'PEM_CONTENT')]) {
                         powershell """
-                            Write-Host 'Creating PEM file again for SSH...'
+                            Write-Host 'Creating PEM file...'
                             \$pemPath = "deploy.pem"
-                            \$PEM_CONTENT = \$env:PEM_CONTENT -replace "`r`n", "`n"
+                            \$PEM_CONTENT = \$env:PEM_CONTENT -replace "`r`n", "`n"  # Normalize line breaks
                             \$PEM_CONTENT | Out-File -FilePath \$pemPath -Encoding ascii
 
+                            Write-Host 'Fixing PEM file permissions...'
                             icacls \$pemPath /inheritance:r
                             icacls \$pemPath /remove "BUILTIN\\Users" "Everyone"
                             icacls \$pemPath /grant:r "\$(whoami):F"
+
+                            # Confirm file contents (optional for debugging)
+                            Write-Host "PEM File Content: \$(Get-Content \$pemPath)"
+
 
                             Write-Host 'Connecting to EC2...'
                             ssh -i \$pemPath -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_PUBLIC_IP} "
