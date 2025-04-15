@@ -84,3 +84,6 @@ pipeline {
         }
     }
 }
+// Jenkins run locally and it runs command locally because it considers itself as a agent node locally. 
+// and we are not connecting to ec2 So, we need to run the command on the agent node that is local 
+// for ec2 we need to do ssh for running jenkins on it and running it there as an agent.
