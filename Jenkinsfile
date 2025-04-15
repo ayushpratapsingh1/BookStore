@@ -71,17 +71,21 @@ pipeline {
         }
     }
 
-        post {
-            always {
-                node {
-                    cleanWs()
-                }
+    post {
+     always {
+        node {
+                cleanWs()
             }
         }
-        success {
+    } 
+    success {
+        script {
             echo 'Deployment completed successfully!'
         }
-        failure {
+    }
+    failure {
+        script {
             echo 'Deployment failed!'
         }
     }
+}
