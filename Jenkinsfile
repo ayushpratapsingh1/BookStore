@@ -5,7 +5,7 @@ pipeline {
         DOCKER_USERNAME = credentials('DOCKER_USERNAME')
         DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
         EC2_PUBLIC_IP = credentials('EC2_PUBLIC_IP')
-        EC2_USER = 'ec2-user'
+        EC2_USER = credentials('EC2_USER')
         PRIVATE_KEY = credentials('EC2_PRIVATE_KEY')
         MONGO_URI = credentials('MONGO_URI')
         AWS_REGION = credentials('AWS_REGION')
