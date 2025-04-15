@@ -2,21 +2,21 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_USERNAME = credentials('DOCKER_USERNAME')  // Jenkins credentials store for Docker
-        DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')  // Jenkins credentials store for Docker
-        EC2_PUBLIC_IP = credentials('EC2_PUBLIC_IP')  // Jenkins credentials store for EC2 public IP
-        EC2_USER = credentials('EC2_USER')  // Jenkins credentials store for EC2 user
-        PRIVATE_KEY = credentials('EC2_PRIVATE_KEY')  // Jenkins credentials store for EC2 private key
-        MONGO_URI = credentials('MONGO_URI')  // Jenkins credentials store for Mongo URI
-        AWS_REGION = credentials('AWS_REGION')  // Jenkins credentials store for AWS Region
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')  // Jenkins credentials store for AWS Access Key ID
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')  // Jenkins credentials store for AWS Secret Access Key
+        DOCKER_USERNAME = credentials('DOCKER_USERNAME')          // Jenkins credentials for Docker
+        DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')          // Jenkins credentials for Docker
+        EC2_PUBLIC_IP = credentials('EC2_PUBLIC_IP')              // Jenkins credentials for EC2 IP
+        EC2_USER = credentials('EC2_USER')                        // Jenkins credentials for EC2 username
+        PRIVATE_KEY = credentials('EC2_PRIVATE_KEY')              // Jenkins SSH private key
+        MONGO_URI = credentials('MONGO_URI')                      // Mongo URI for environment
+        AWS_REGION = credentials('AWS_REGION')                    // AWS Region
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')      // AWS Access Key
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY') // AWS Secret Key
     }
 
     stages {
         stage('Checkout code') {
             steps {
-                git 'https://github.com/ayushpratapsingh1/BookStore.git'  // Replace with your GitHub repository URL
+                git 'https://github.com/ayushpratapsingh1/BookStore.git'
             }
         }
 
@@ -72,13 +72,9 @@ pipeline {
     }
 
     post {
-    always {
-            script {
-                echo "Cleaning workspace..."
-            }
-            node {
-                cleanWs()
-            }
+        always {
+            echo "Cleaning workspace..."
+            cleanWs()
         }
     }
 }
