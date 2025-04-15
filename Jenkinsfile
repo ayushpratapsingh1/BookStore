@@ -4,8 +4,6 @@ pipeline {
     environment {
         DOCKER_USERNAME = credentials('DOCKER_USERNAME')
         DOCKER_PASSWORD = credentials('DOCKER_PASSWORD')
-        EC2_PUBLIC_IP = credentials('EC2_PUBLIC_IP')
-        EC2_USER = credentials('EC2_USER')
         MONGO_URI = credentials('MONGO_URI')
         AWS_REGION = credentials('AWS_REGION')
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
@@ -38,74 +36,53 @@ pipeline {
 
         stage('Upload docker-compose.yml to EC2') {
             steps {
-                script {
-                    withCredentials([string(credentialsId: 'EC2_PRIVATE_KEY_STRING', variable: 'PEM_CONTENT')]) {
-                        powershell """
-                            Write-Host 'Creating PEM file...'
-                            \$pemPath = "deploy.pem"
-                            \$PEM_CONTENT = \$env:PEM_CONTENT -replace "`r`n", "`n"  # Normalize line breaks
-                            \$PEM_CONTENT | Out-File -FilePath \$pemPath -Encoding ascii
-
-                            Write-Host 'Fixing PEM file permissions...'
-                            icacls \$pemPath /inheritance:r
-                            icacls \$pemPath /remove "BUILTIN\\Users" "Everyone"
-                            icacls \$pemPath /grant:r "\$(whoami):F"
-
-                            # Confirm file contents (optional for debugging)
-                            Write-Host "PEM File Content: \$(Get-Content \$pemPath)"
-
-
-                            Write-Host 'Uploading docker-compose.yml to EC2...'
-                            scp -i \$pemPath -o StrictHostKeyChecking=no docker-compose.yml ${EC2_USER}@${EC2_PUBLIC_IP}:/home/${EC2_USER}/Bookstore/
-
-                            Write-Host 'Saving PEM path to temp file for next stage...'
-                            "\$pwd\\\$pemPath" | Out-File pem_path.txt
-                        """
-                    }
-                }
+                sshPublisher(publishers: [
+                    sshPublisherDesc(
+                        configName: 'EC2_SSH', // this must match the name you configured in "Publish over SSH"
+                        transfers: [
+                            sshTransfer(
+                                sourceFiles: 'docker-compose.yml',
+                                remoteDirectory: 'Bookstore', // this will go to /home/ec2-user/Bookstore
+                                removePrefix: '',
+                                execCommand: '', // no need to run commands now
+                                execTimeout: 120000
+                            )
+                        ],
+                        usePromotionTimestamp: false,
+                        verbose: true
+                    )
+                ])
             }
         }
 
         stage('Deploy to EC2') {
             steps {
-                script {
-                    withCredentials([string(credentialsId: 'EC2_PRIVATE_KEY_STRING', variable: 'PEM_CONTENT')]) {
-                        powershell """
-                            Write-Host 'Creating PEM file...'
-                            \$pemPath = "deploy.pem"
-                            \$PEM_CONTENT = \$env:PEM_CONTENT -replace "`r`n", "`n"  # Normalize line breaks
-                            \$PEM_CONTENT | Out-File -FilePath \$pemPath -Encoding ascii
+                sshPublisher(publishers: [
+                    sshPublisherDesc(
+                        configName: 'EC2_SSH',
+                        transfers: [
+                            sshTransfer(
+                                execCommand: '''
+                                    cd Bookstore &&
+                                    export DOCKER_USERNAME=${DOCKER_USERNAME} &&
+                                    export AWS_REGION=${AWS_REGION} &&
+                                    export MONGO_URI='${MONGO_URI}' &&
+                                    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} &&
+                                    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} &&
 
-                            Write-Host 'Fixing PEM file permissions...'
-                            icacls \$pemPath /inheritance:r
-                            icacls \$pemPath /remove "BUILTIN\\Users" "Everyone"
-                            icacls \$pemPath /grant:r "\$(whoami):F"
-
-                            # Confirm file contents (optional for debugging)
-                            Write-Host "PEM File Content: \$(Get-Content \$pemPath)"
-
-
-                            Write-Host 'Connecting to EC2...'
-                            ssh -i \$pemPath -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_PUBLIC_IP} "
-                                cd /home/${EC2_USER}/Bookstore &&
-                                export DOCKER_USERNAME=${DOCKER_USERNAME} &&
-                                export AWS_REGION=${AWS_REGION} &&
-                                export MONGO_URI='${MONGO_URI}' &&
-                                export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} &&
-                                export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} &&
-
-                                docker-compose down &&
-                                docker rmi ${DOCKER_USERNAME}/backend:latest &&
-                                docker system prune -af &&
-                                docker-compose pull &&
-                                docker-compose up -d --force-recreate
-                            "
-
-                            Write-Host 'Cleaning up PEM...'
-                            Remove-Item \$pemPath
-                        """
-                    }
-                }
+                                    docker-compose down &&
+                                    docker rmi ${DOCKER_USERNAME}/backend:latest &&
+                                    docker system prune -af &&
+                                    docker-compose pull &&
+                                    docker-compose up -d --force-recreate
+                                ''',
+                                execTimeout: 120000
+                            )
+                        ],
+                        usePromotionTimestamp: false,
+                        verbose: true
+                    )
+                ])
             }
         }
     }
