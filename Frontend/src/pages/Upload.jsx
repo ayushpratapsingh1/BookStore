@@ -149,7 +149,6 @@ const Upload = () => {
 
   return (
     <div className="container mx-auto px-6 py-12 mt-16 relative">
-      {/* Success overlay with confetti */}
       {uploaded && (
         <>
           <ConfettiEffect />
@@ -180,13 +179,10 @@ const Upload = () => {
           </div>
         </>
       )}
-      
-      {/* Form container with conditional opacity */}
       <div className={`max-w-3xl mx-auto bg-white rounded-lg p-8 shadow-[0_20px_50px_rgba(255,_159,_28,_0.3)]
       hover:shadow-[0_20px_100px_rgba(255,_159,_28,_0.3)] duration-300 ${uploaded ? 'opacity-20 pointer-events-none' : ''}`}>
         <h2 className="text-2xl font-semibold text-[#212121] mb-8">Share a Book</h2>
         
-        {/* Upload progress overlay */}
         {isUploading && (
           <div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center rounded-lg z-10">
             <Loader className="h-12 w-12 text-[#FF9F1C] animate-spin mb-4" />
