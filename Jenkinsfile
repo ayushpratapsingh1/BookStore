@@ -41,7 +41,7 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'EC2_PRIVATE_KEY', variable: 'KEY_FILE')]) {
                         bat """
-                        powershell -Command "scp -i '%KEY_FILE%' -o StrictHostKeyChecking=no docker-compose.yml %EC2_USER%@%EC2_PUBLIC_IP%:/home/%EC2_USER%/Bookstore/"
+                        bash -c "scp -i %KEY_FILE% -o StrictHostKeyChecking=no docker-compose.yml %EC2_USER%@%EC2_PUBLIC_IP%:/home/%EC2_USER%/Bookstore/"
                         """
                     }
                 }
@@ -57,17 +57,19 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: 'EC2_PRIVATE_KEY', variable: 'KEY_FILE')]) {
                         bat """
-                        powershell -Command "ssh -i '%KEY_FILE%' -o StrictHostKeyChecking=no %EC2_USER%@%EC2_PUBLIC_IP% \\"cd /home/%EC2_USER%/Bookstore; `
-                            \$env:DOCKER_USERNAME='%DOCKER_USERNAME%'; `
-                            \$env:MONGO_URI='%MONGO_URI%'; `
-                            \$env:AWS_REGION='%AWS_REGION%'; `
-                            \$env:AWS_ACCESS_KEY_ID='%AWS_ACCESS_KEY_ID%'; `
-                            \$env:AWS_SECRET_ACCESS_KEY='%AWS_SECRET_ACCESS_KEY%'; `
-                            docker-compose down; `
-                            docker rmi %DOCKER_USERNAME%/backend:latest; `
-                            docker system prune -af; `
-                            docker-compose pull; `
-                            docker-compose up -d --force-recreate\\""
+                        bash -c "ssh -i %KEY_FILE% -o StrictHostKeyChecking=no %EC2_USER%@%EC2_PUBLIC_IP% '
+                        cd /home/%EC2_USER%/Bookstore &&
+                        export DOCKER_USERNAME=%DOCKER_USERNAME% &&
+                        export AWS_REGION=%AWS_REGION% &&
+                        export MONGO_URI=%MONGO_URI% &&
+                        export AWS_ACCESS_KEY_ID=%AWS_ACCESS_KEY_ID% &&
+                        export AWS_SECRET_ACCESS_KEY=%AWS_SECRET_ACCESS_KEY% &&
+                        docker-compose down &&
+                        docker rmi %DOCKER_USERNAME%/backend:latest &&
+                        docker system prune -af &&
+                        docker-compose pull &&
+                        docker-compose up -d --force-recreate
+                        '"
                         """
                     }
                 }
