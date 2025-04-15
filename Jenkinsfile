@@ -42,11 +42,13 @@ pipeline {
                     // Using withCredentials for secure handling of private key file
                     withCredentials([file(credentialsId: 'EC2_PRIVATE_KEY', variable: 'KEY_FILE')]) {
                     bat """
+                        copy %KEY_FILE% C:\\Users\\ayush\\.ssh\\deploy.pem
+
                         echo Fixing PEM file permissions...
-                        icacls "%KEY_FILE%" /inheritance:r /grant:r ayush:F"
+                        icacls C:\\Users\\ayush\\.ssh\\deploy.pem /inheritance:r /grant:r ayush:F"
 
                         echo Uploading docker-compose.yml to EC2...
-                        scp -i "%KEY_FILE%" -o StrictHostKeyChecking=no docker-compose.yml ${EC2_USER}@${EC2_PUBLIC_IP}:/home/${EC2_USER}/Bookstore/
+                        scp -i C:\\Users\\ayush\\.ssh\\deploy.pem -o StrictHostKeyChecking=no docker-compose.yml ${EC2_USER}@${EC2_PUBLIC_IP}:/home/${EC2_USER}/Bookstore/
                     """
                     }
                 }
