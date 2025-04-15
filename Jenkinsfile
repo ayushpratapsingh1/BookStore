@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage('Checkout code') {
             steps {
-                git 'https://github.com/ayushpratapsingh1/YourRepo.git'  // Replace with your GitHub repository URL
+                git 'https://github.com/ayushpratapsingh1/BookStore.git'  // Replace with your GitHub repository URL
             }
         }
 
