@@ -23,7 +23,7 @@ pipeline {
         stage('Log in to Docker Hub') {
             steps {
                 script {
-                    sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+                    bat "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin" //using bat instead of sh for Windows compatibility
                 }
             }
         }
@@ -31,8 +31,8 @@ pipeline {
         stage('Build and Push Server Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_USERNAME}/backend:latest ./Backend"
-                    sh "docker push ${DOCKER_USERNAME}/backend:latest"
+                    bat "docker build -t ${DOCKER_USERNAME}/backend:latest ./Backend"
+                    bat "docker push ${DOCKER_USERNAME}/backend:latest"
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
         stage('Upload docker-compose.yml to EC2') {
             steps {
                 script {
-                    sh """
+                    bat """
                     scp -i ${PRIVATE_KEY} -o StrictHostKeyChecking=no docker-compose.yml ${EC2_USER}@${EC2_PUBLIC_IP}:/home/${EC2_USER}/Bookstore/
                     """
                 }
@@ -48,13 +48,13 @@ pipeline {
         }
         stage('Debug') {
             steps {
-                sh 'echo "EC2_USER is $EC2_USER"'
+                bat 'echo "EC2_USER is $EC2_USER"'
             }
         }
         stage('Deploy to EC2') {
             steps {
                 script {
-                    sh """
+                    bat """
                     ssh -i ${PRIVATE_KEY} -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_PUBLIC_IP} << EOF
                     cd /home/${EC2_USER}/Bookstore/
                     export DOCKER_USERNAME=${DOCKER_USERNAME}
