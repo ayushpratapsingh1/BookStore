@@ -77,15 +77,5 @@ pipeline {
                 cleanWs()
             }
         }
-    } 
-    success {
-        script {
-            echo 'Deployment completed successfully!'
-        }
-    }
-    failure {
-        script {
-            echo 'Deployment failed!'
-        }
     }
 }
