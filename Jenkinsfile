@@ -46,7 +46,11 @@ pipeline {
                 }
             }
         }
-
+        stage('Debug') {
+            steps {
+                sh 'echo "EC2_USER is $EC2_USER"'
+            }
+        }
         stage('Deploy to EC2') {
             steps {
                 script {
