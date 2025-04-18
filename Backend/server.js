@@ -24,6 +24,10 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/books', bookRoutes);
 app.use('/api/stats', statsRoutes);
 
+//Change
+app.send('/api', (req, res) => {
+    res.send('API is running');
+});
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
