@@ -16,7 +16,23 @@ pipeline {
                 git branch: 'main', credentialsId: 'Github', url: 'https://github.com/ayushpratapsingh1/BookStore.git'
             }
         }
+        stage('Clean up Docker Images and Containers') {
+            steps {
+                script {
+                    bat """
+                        echo "Stopping and removing all unused containers..."
+                        docker container prune -f
 
+                        echo "Removing dangling and unused images..."
+                        docker image prune -af
+
+                        echo "Cleaning up unused volumes and networks..."
+                        docker volume prune -f
+                        docker network prune -f
+                    """
+                }
+            }
+        }
         stage('Log in to Docker Hub') {
             steps {
                 script {
